@@ -32,6 +32,27 @@ ent 812  gc0 +0  16.7ms
 | `ms` | 帧耗时 |
 | `sprite/flush` | 每个 flush 平均装了多少 sprite，越大合批越好 |
 
+
+## 1.0.1：为什么以前一进关卡面板就消失
+
+面板原先挂在 `Scene` 的 `RendererList` 上（`Renderer`），而 `Level` 自己重写了 `Render()`：
+
+- `Monocle.Scene.Render()` 里只有一句 `RendererList.Render()`（`Monocle/Scene.cs`）
+- `Celeste.Level.Render()` 是 `override`，整套渲染自己走 `GameplayRenderer` / `Background` / `HUD`，
+  **没有调用 `base.Render()`**（`Celeste/Level.cs`）
+
+所以关卡里 `RendererList` 里的东西一次都不会被画；标题 / 大地图没重写 `Render`，走的是 `Scene.Render`，所以那时能看到。
+
+1.0.1 改成把面板画在 `Engine.Draw` 的收尾（`On.Monocle.Engine.Draw` 里 `orig` 之后，直接画到 backbuffer，
+先 `SetRenderTarget(null)` + 恢复 viewport），这条路径任何 Scene 都会经过：Level、Overworld、Oui、PICO-8 都算。
+另外统计的定格也挪到同一处，所以面板自己那几笔依旧不算进显示值。
+
+## 怎么确认它这次真的在关卡里出现了
+
+1. 进游戏（标题）→ 左上角应有面板。
+2. 进任意关卡（比如序章）→ 面板应该还在。
+3. 按 F9，`log.txt` 里 `[DrawCallStats]` 的 `dump:` 行会跟着场景变化，进关卡后 dump 头里的实体数是关卡里的值。
+
 ## 怎么判断是哪种问题
 
 - `sprite/flush` 很大（几十上百）而 `flush` 很小 → **合批是好的**，卡顿去别处找（实体数、`gc0`、脚本、联机、碰撞）。
