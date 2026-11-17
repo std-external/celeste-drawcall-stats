@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>DrawCallStats</AssemblyName>
+    <RootNamespace>Celeste.Mod.DrawCallStats</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <DebugType>none</DebugType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- 游戏/ Everest 引用目录：默认取同级 game/，可用 -p:CelesteRoot=/path 覆盖 -->
+    <CelesteRoot Condition="'$(CelesteRoot)' == ''">$(MSBuildThisFileDirectory)../../game</CelesteRoot>
+    <OutputPath>$(MSBuildThisFileDirectory)../Code/</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Celeste"><HintPath>$(CelesteRoot)/Celeste.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="FNA"><HintPath>$(CelesteRoot)/FNA.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="MMHOOK_Celeste"><HintPath>$(CelesteRoot)/MMHOOK_Celeste.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="MonoMod.RuntimeDetour"><HintPath>$(CelesteRoot)/MonoMod.RuntimeDetour.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="MonoMod.Utils"><HintPath>$(CelesteRoot)/MonoMod.Utils.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

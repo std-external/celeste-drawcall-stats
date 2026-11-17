@@ -1,0 +1,6 @@
+- Name: DrawCallStats
+  Version: 1.0.0
+  DLL: Code/DrawCallStats.dll
+  Dependencies:
+    - Name: EverestCore
+      Version: 1.4.0
